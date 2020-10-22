@@ -24,8 +24,9 @@ def create_pxgrid_password():
     response = requests.post(url=url, headers=headers, data=data, verify=False)
     if response.status_code == 409:
         raise Exception (f"The PxGrid user {pxgrid_user} already exists. Kindly delete it and try again")
+    elif response.status_code == 503:
+        raise Exception (f"user/password PxGrid is not enabled. Enable it on ISE > administration > PxGrid services > settings")
     elif response.status_code != 200:
-        print(f"An error has occured while creating the PxGrid user:\n{response.text}")
         raise Exception (f"An error has occured while creating the PxGrid user:\n{response.text}")
     else:
         print(f"The PxGrid user {pxgrid_user} was successfully created.")
