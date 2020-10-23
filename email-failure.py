@@ -5,11 +5,11 @@ from pprint import pprint
 requests.packages.urllib3.disable_warnings()
 import smtplib, ssl
 
-# ===============================
+# ========= CHANGE US ===========
 ise_admin = os.environ.get('ISE_USER','admin')
 ise_pass = os.environ.get('ISE_PASS','C1sco12345!')
 ise_ip = os.environ.get('ISE_IP','10.10.20.70')
-pxgrid_user = "pxgrid_user"
+pxgrid_user = "ise_to_mail"
 sleep_time = 60                 # Sleep time between checks (in seconds).
 smtp_server = os.environ.get('SMTP_SERVER',"smtp.gmail.com")
 smtp_port = os.environ.get('MAIL_PORT', 465)
@@ -63,8 +63,7 @@ def get_pxgrid_secret():
     response = requests.post(url=url, headers=headers, data=data, verify=False, 
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_password))
     if response.status_code != 200:
-        print(f"An error has occured while retrieving PxGrid secret:\n{response.text}")
-        raise Exception
+        raise Exception (f"An error has occured while retrieving PxGrid secret:\n{response.text}")
     else:
         print("The PxGrid secret was successfully retrieved.")
         return(response.json()['secret'])
@@ -77,6 +76,7 @@ def get_radius_failures():
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_secret))
     if response.status_code != 200:
         print(f"An error has occured while retrieving failures:\n{response.text}")
+        raise Exception (f"An error has occured while retrieving failures:\n\n\n{response.text}")
     else:
         print("Successfully pulled the failure list.")
         return(response.json()['failures'])
@@ -95,15 +95,24 @@ def send_email(message):
 
 if __name__ == "__main__":
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
-    pxgrid_password = create_pxgrid_password()
+    try:
+        with open(f'{ise_ip}-pass.txt', 'r') as f:
+            pxgrid_password = f.read()
+    except:
+        pxgrid_password = create_pxgrid_password()
+        with open(f'{ise_ip}-pass.txt', 'w') as f:
+            f.write(pxgrid_password)
     activate_account()
     pxgrid_secret = get_pxgrid_secret()
     context = ssl.create_default_context()
     print("\n\n\n\t\tPreparation complete - Now let's get to business...\n\n\n")
     while True:
-        failures = get_radius_failures()
-        if len(failures) == 0:
-            print(f"Woo Hoo! No failures!\nWait.. that's means I have nothing to do..\nI'll just sit here. Alone. In the dark... (for {sleep_time} seconds)\n\n")
-        else:
-            process_failures(failures)
+        try:
+            failures = get_radius_failures()
+            if len(failures) == 0:
+                print(f"Woo Hoo! No failures!\nWait.. that's means I have nothing to do..\nI'll just sit here. Alone. In the dark... (for {sleep_time} seconds)\n\n")
+            else:
+                process_failures(failures)
+        except:
+            print("An error has occurred - not able to retrieve radius failures")
         time.sleep(sleep_time)
