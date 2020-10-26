@@ -23,13 +23,16 @@ def create_pxgrid_password():
     data = '{"nodeName": "%s"}' % pxgrid_user
     response = requests.post(url=url, headers=headers, data=data, verify=False)
     if response.status_code == 409:
+        print (f"\033[0;33;40mThe PxGrid user {pxgrid_user} already exists. Kindly delete it and try again\033[0m")
         raise Exception (f"The PxGrid user {pxgrid_user} already exists. Kindly delete it and try again")
     elif response.status_code == 503:
+        print (f"\033[1;31;40muser/password PxGrid is not enabled. Enable it on ISE > administration > PxGrid services > settings\033[0m")
         raise Exception (f"user/password PxGrid is not enabled. Enable it on ISE > administration > PxGrid services > settings")
     elif response.status_code != 200:
+        print (f"\033[1;31;40mAn error has occured while creating the PxGrid user:\n\033[0m{response.text}")
         raise Exception (f"An error has occured while creating the PxGrid user:\n{response.text}")
     else:
-        print(f"The PxGrid user {pxgrid_user} was successfully created.")
+        print(f"\033[0;32;40mThe PxGrid user {pxgrid_user} was successfully created.\033[0m")
         return(response.json()['password'])
 
 
@@ -42,17 +45,18 @@ def activate_account():
         response = requests.post(url=url, headers=headers, data=data, verify=False, 
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_password))
         if response.status_code != 200:
-            print(f"An error has occured while activating the PxGrid user:\n{response.text}")
+            print(f"\033[1;31;40mAn error has occured while activating the PxGrid user:\n\033[0m{response.text}")
+            break
         elif response.json()['accountState'] == "PENDING":
-            print(f"Waiting for PxGrid user to be approved on ISE. Trying again in {str(n)} seconds.")
-            print(f"On ISE go to Administration > PxGrid services, mark and approve {pxgrid_user}.")
+            print(f"\033[0;33;40mWaiting for PxGrid user to be approved on ISE. Trying again in {str(n)} seconds.")
+            print(f"On ISE go to Administration > PxGrid services, mark and approve {pxgrid_user}.\033[0m\n")
             time.sleep(n)
             n = n * 2
         elif response.json()['accountState'] == "ENABLED":
-            print("PxGrid user approved!")
+            print("\033[0;32;40mPxGrid user approved!\033[0m")
             is_activated = True
         else:
-            print(f"ERROR: We shouldn't have got here...\n{response.json()}")
+            print(f"\033[1;31;40mERROR: We shouldn't have got here...\n\033[0m{response.json()}")
         if n > 3600:
             raise Exception ("it's been too long... exiting")
 
@@ -63,9 +67,9 @@ def get_pxgrid_secret():
     response = requests.post(url=url, headers=headers, data=data, verify=False, 
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_password))
     if response.status_code != 200:
-        raise Exception (f"An error has occured while retrieving PxGrid secret:\n{response.text}")
+        raise Exception (f"\033[1;31;40mAn error has occured while retrieving PxGrid secret:\033[0m\n{response.text}")
     else:
-        print("The PxGrid secret was successfully retrieved.")
+        print("\033[0;32;40mThe PxGrid secret was successfully retrieved.\033[0m")
         return(response.json()['secret'])
 
 
@@ -75,10 +79,10 @@ def get_radius_failures():
     response = requests.post(url=url, headers=headers, data=data, verify=False, 
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_secret))
     if response.status_code != 200:
-        print(f"An error has occured while retrieving failures:\n{response.text}")
+        print(f"\033[1;31;40mAn error has occured while retrieving failures:\n\033[0m{response.text}")
         raise Exception (f"An error has occured while retrieving failures:\n\n\n{response.text}")
     else:
-        print("Successfully pulled the failure list.")
+        print("\033[0;32;40mSuccessfully pulled the failure list.\033[0m")
         return(response.json()['failures'])
 
 
@@ -95,6 +99,7 @@ def send_email(message):
 
 if __name__ == "__main__":
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    print(f"Using ISE: {ise_ip}")
     try:
         with open(f'{ise_ip}-pass.txt', 'r') as f:
             pxgrid_password = f.read()
@@ -114,5 +119,5 @@ if __name__ == "__main__":
             else:
                 process_failures(failures)
         except:
-            print("An error has occurred - not able to retrieve radius failures")
+            print("\033[1;31;40mAn error has occurred - not able to retrieve radius failures\033[0m")
         time.sleep(sleep_time)
