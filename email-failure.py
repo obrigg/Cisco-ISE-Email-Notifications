@@ -108,7 +108,7 @@ def process_failures(failures):
     message = "Subject: RADIUS Failure Report\n\n"
     for fail in failures:
         message += str(fail) + "\n\n"
-    print(f"The following email will be sent from {mail_username} to: {mail_destination}\
+    print(f"The following email will be sent from: {mail_username} to: {mail_destination}\
         \n\n{message}")
     send_email(message)
 
@@ -139,16 +139,16 @@ if __name__ == "__main__":
     while True:
         try:
             failures = get_radius_failures()
-            if len(failures) == 0:
-                print(f"Woo Hoo! No failures!\nWait.. that's means I have nothing to do..\
+            new_failures = []
+            for failure in failures:
+                if int(failure['id']) > int(last_fail_id):
+                    new_failures.append(failure)
+                    last_fail_id = failures[0]['id']
+            if len(new_failures) == 0:
+                print(f"Woo Hoo! No new failures!\nWait.. that's means I have nothing to do..\
                     \nI'll just sit here. Alone. In the dark... (for {sleep_time} seconds)\n\n")
             else:
-                new_failures = []
-                for failure in failures:
-                    if int(failure['id']) > int(last_fail_id):
-                        new_failures.append(failure)
-                last_fail_id = failures[0]['id']
-                print(f"Found {len(failures)}. {len(new_failures)} of them are new")
+                print(f"Found {len(new_failures)} new RADIUS failures.")
                 process_failures(new_failures)
         except:
             print("\033[1;31;40mAn error has occurred - not able to retrieve radius failures\033[0m")
