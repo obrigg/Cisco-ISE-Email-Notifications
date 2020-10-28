@@ -121,12 +121,12 @@ if __name__ == "__main__":
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     print(f"Using ISE: {ise_ip}")
     try:
-        with open(f'{ise_ip}-pass.txt', 'r') as f:
+        with open(f'/data/{ise_ip}-pass.txt', 'r') as f:
             pxgrid_password = f.read()
     except:
         print(f"Not able to acces the pxGrid password file {ise_ip}-pass.txt, assuming user {pxgrid_user} does not exist.")
         pxgrid_password = create_pxgrid_password()
-        with open(f'{ise_ip}-pass.txt', 'w') as f:
+        with open(f'/data/{ise_ip}-pass.txt', 'w') as f:
             f.write(pxgrid_password)
     activate_account()
     node = service_lookup("com.cisco.ise.radius")
