@@ -10,7 +10,7 @@ import smtplib, ssl
 ise_admin = os.environ.get('ISE_USER','admin')
 ise_pass = os.environ.get('ISE_PASS','C1sco12345!')
 ise_ip = os.environ.get('ISE_IP','10.10.20.70')
-pxgrid_user = "ise_to_mail"
+pxgrid_user = os.environ.get('PXGRID_USER',"ise_to_mail")
 sleep_time = 60                 # Sleep time between checks (in seconds).
 smtp_server = os.environ.get('SMTP_SERVER',"smtp.gmail.com")
 smtp_port = os.environ.get('MAIL_PORT', 465)
