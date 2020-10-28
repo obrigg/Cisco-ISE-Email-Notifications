@@ -108,6 +108,8 @@ def process_failures(failures):
     message = "Subject: RADIUS Failure Report\n\n"
     for fail in failures:
         message += str(fail) + "\n\n"
+    print(f"The following email will be sent from {mail_username} to: {mail_destination}\
+        \n\n{message}")
     send_email(message)
 
 
@@ -146,6 +148,7 @@ if __name__ == "__main__":
                     if int(failure['id']) > int(last_fail_id):
                         new_failures.append(failure)
                 last_fail_id = failures[0]['id']
+                print(f"Found {len(failures)}. {len(new_failures)} of them are new")
                 process_failures(new_failures)
         except:
             print("\033[1;31;40mAn error has occurred - not able to retrieve radius failures\033[0m")
