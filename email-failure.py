@@ -24,15 +24,11 @@ def create_pxgrid_password():
     data = '{"nodeName": "%s"}' % pxgrid_user
     response = requests.post(url=url, headers=headers, data=data, verify=False)
     if response.status_code == 409:
-        print (f"\033[0;33;40mThe PxGrid user {pxgrid_user} already exists. Kindly \
-            delete it and try again\033[0m")
-        raise Exception (f"The PxGrid user {pxgrid_user} already exists. Kindly \
-            delete it and try again")
+        print (f"\033[0;33;40mThe PxGrid user {pxgrid_user} already exists. Kindly delete it and try again\033[0m")
+        raise Exception (f"The PxGrid user {pxgrid_user} already exists. Kindly delete it and try again")
     elif response.status_code == 503:
-        print (f"\033[1;31;40muser/password PxGrid is not enabled. Enable it on ISE \
-            > administration > PxGrid services > settings\033[0m")
-        raise Exception (f"user/password PxGrid is not enabled. Enable it on ISE \
-            > administration > PxGrid services > settings")
+        print (f"\033[1;31;40muser/password PxGrid is not enabled. Enable it on ISE > administration > PxGrid services > settings\033[0m")
+        raise Exception (f"user/password PxGrid is not enabled. Enable it on ISE > administration > PxGrid services > settings")
     elif response.status_code != 200:
         print (f"\033[1;31;40mAn error has occured while creating the PxGrid user:\
             \n\033[0m{response.text}")
@@ -56,10 +52,8 @@ def activate_account():
                 \n\033[0m{response.text}")
             break
         elif response.json()['accountState'] == "PENDING":
-            print(f"\033[0;33;40mWaiting for PxGrid user to be approved on ISE. \
-                Trying again in {str(n)} seconds.")
-            print(f"On ISE go to Administration > PxGrid services, mark and approve \
-                {pxgrid_user}.\033[0m\n")
+            print(f"\033[0;33;40mWaiting for PxGrid user to be approved on ISE. Trying again in {str(n)} seconds.")
+            print(f"On ISE go to Administration > PxGrid services, mark and approve {pxgrid_user}.\033[0m\n")
             time.sleep(n)
             n = n * 2
         elif response.json()['accountState'] == "ENABLED":
@@ -91,8 +85,7 @@ def get_pxgrid_secret(node):
     response = requests.post(url=url, headers=headers, data=data, verify=False, 
             auth=requests.auth.HTTPBasicAuth(pxgrid_user, pxgrid_password))
     if response.status_code != 200:
-        raise Exception (f"\033[1;31;40mAn error has occured while retrieving \
-            PxGrid secret:\033[0m\n{response.text}")
+        raise Exception (f"\033[1;31;40mAn error has occured while retrieving PxGrid secret:\033[0m\n{response.text}")
     else:
         print("\033[0;32;40mThe PxGrid secret was successfully retrieved.\033[0m")
         return(response.json()['secret'])
@@ -131,6 +124,7 @@ if __name__ == "__main__":
         with open(f'{ise_ip}-pass.txt', 'r') as f:
             pxgrid_password = f.read()
     except:
+        print(f"Not able to acces the pxGrid password file {ise_ip}-pass.txt, assuming user {pxgrid_user} does not exist.")
         pxgrid_password = create_pxgrid_password()
         with open(f'{ise_ip}-pass.txt', 'w') as f:
             f.write(pxgrid_password)
