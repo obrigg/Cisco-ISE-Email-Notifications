@@ -93,7 +93,7 @@ Make sure python3 is available (`guestshell run python -V` or `guestshell run py
 1. Enter guestshell
 2. Create a directory: `mkdir /bootflash/guest-share/ise_to_mail`
 3. Create a directory: `mkdir /bootflash/guest-share/ise_to_mail/data`
-4. Use `vi /bootflash/guest-share/ise_to_mail/run.py` to create a new python file, copy and paste the content of this file in the new file.
+4. Use `vi /bootflash/guest-share/ise_to_mail/run.py` to create a new python file, copy and paste the content of the `guestshell.py` file in the new file. **If you choose to keep the filename `guestshell`, make sure to adjust the EEM script below**
 5. Use `vi /bootflash/guest-share/ise_to_mail/data/env.sh` to create an environment variables file.
 6. Use `vi ~/.bashrc' to add 'source <path to env.sh>` that will use the env variables everytime guestshell starts.
 7. Create an EEM applet that will run the script every 10 minutes:
