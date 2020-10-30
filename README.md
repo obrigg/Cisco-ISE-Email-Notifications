@@ -50,8 +50,6 @@ Note: its good practice to disable CSRF to make sure you are able to authenticat
 
 ### Set a environment variables file
 ```
-ISE_USER= <admin user for ISE, default is 'admin'>
-ISE_PASS= <admin password for ISE>
 ISE_IP= <ISE hostname/IP>
 MAIL_USER= <SMTP username>
 MAIL_PASS= <SMTP password>

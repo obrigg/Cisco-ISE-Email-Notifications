@@ -7,8 +7,6 @@ requests.packages.urllib3.disable_warnings()
 import smtplib, ssl
 
 # ========= CHANGE US ===========
-ise_admin = os.environ.get('ISE_USER','admin')
-ise_pass = os.environ.get('ISE_PASS','C1sco12345!')
 ise_ip = os.environ.get('ISE_IP','10.10.20.70')
 pxgrid_user = os.environ.get('PXGRID_USER',"ise_to_mail")
 sleep_time = 60                 # Sleep time between checks (in seconds).
