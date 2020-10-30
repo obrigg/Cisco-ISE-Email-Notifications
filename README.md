@@ -12,7 +12,7 @@ With Cisco ISE's open APIs - that does not need to stop us.
 This code will leverage ISE's pxGrid API to fetch RADIUS failures from ISE and send them via mail.
 (#TODO - change the operation mode to `push` instead of `pull`)
 
-## How to run the script:
+## How to run the script on Docker:
 
 ### High-level overview of the flow
 
@@ -77,6 +77,34 @@ During the first run, the script will create a new pxGrid user (see environment 
 2. Navigate to Administration > pxGrid Services and select the new user.
 4. Enable the user by selecting the "approve" button.
 <p align="center"><img src="img/approve-node.png"></p>
+
+## How to run the script on Guestshell:
+Cisco Guestshell is a virtualized Linux-based environment, designed to run custom Linux applications, including Python for automated control and management of Cisco devices.
+Guestshell is available on many Cisco products including Catalyst 9000 series switches, Catalyst 9800 Wireless controllers, ISR 4000 series routers, ASR 1000 series routers, Catalyst 8000 series routers, Nexus 9000 series switches, etc'.
+
+Running the code on guestshell is almost identical to running it on Docker. The only exception is the repeatable loop will be done by IOS-XE/NX-OS - ensuring the script will continue to run even after the device is rebooted/upgraded.
+
+### Enable guestshell on the switch
+Link to the <a href=https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/prog/configuration/173/b_173_programmability_cg/guest_shell.html> Cisco configuration guide</a>.
+Make sure python3 is available (`guestshell run python -V` or `guestshell run python3 -V`)
+### Install the requests module
+`pip install requests`
+### First time preparation
+1. Enter guestshell
+2. Create a directory: `mkdir /bootflash/guest-share/ise_to_mail`
+3. Create a directory: `mkdir /bootflash/guest-share/ise_to_mail/data`
+4. Use `vi /bootflash/guest-share/ise_to_mail/run.py` to create a new python file, copy and paste the content of this file in the new file.
+5. Use `vi /bootflash/guest-share/ise_to_mail/data/env.sh` to create an environment variables file.
+6. Use `vi ~/.bashrc' to add 'source <path to env.sh>` that will use the env variables everytime guestshell starts.
+7. Create an EEM applet that will run the script every 10 minutes:
+    ```
+    conf t
+     event manager applet ise_to_mail
+      event timer cron cron-entry "*/10 * * * *"
+      action 1.0 cli command "enable"
+      action 2.0 cli command "guestshell run python3 /bootflash/guest-share/ise_to_mail/run.py"
+      action 3.0 syslog msg "Running the ISE_to_MAIL script"
+    ```
 
 ## What to expect
 
