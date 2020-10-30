@@ -2,11 +2,15 @@
 
 ## The Challenge
 
-Some customers are asking for email notifications, as an alerting mechanism for RADIUS failures on ISE.
+While enterprise customers usually have a SOC team monitoring the various security systems for alerts, not all customer have the resources for SOC or a centralized monitoring and event management systems.
+These customers would prefer to use email notifications as an alerting mechanism for RADIUS failures on ISE. However, (currently) ISE does not have a built-in capability to send email upon RADIUS failures.
+
+With Cisco ISE's open APIs - that does not need to stop us.
 
 ## The Solution
 
-This script will use ISE pxGrid API to fetch RADIUS failures from ISE and send them via mail.
+This code will leverage ISE's pxGrid API to fetch RADIUS failures from ISE and send them via mail.
+(#TODO - change the operation mode to `push` instead of `pull`)
 
 ## How to run the script:
 
