@@ -135,19 +135,24 @@ if __name__ == "__main__":
     last_fail_id = "0"
     print("\n\n\n\t\tPreparation complete - Now let's get to business...\n\n\n")
     while True:
+        new_failures = []
         try:
             failures = get_radius_failures()
-            new_failures = []
             for failure in failures:
                 if int(failure['id']) > int(last_fail_id):
                     new_failures.append(failure)
                     last_fail_id = failures[0]['id']
-            if len(new_failures) == 0:
-                print(f"Woo Hoo! No new failures!\nWait.. that's means I have nothing to do..\
-                    \nI'll just sit here. Alone. In the dark... (for {sleep_time} seconds)\n\n")
-            else:
-                print(f"Found {len(new_failures)} new RADIUS failures.")
-                process_failures(new_failures)
         except:
             print("\033[1;31;40mAn error has occurred - not able to retrieve radius failures\033[0m")
+        #
+        if len(new_failures) == 0:
+            print(f"Woo Hoo! No new failures!\nWait.. that's means I have nothing to do..\
+                \nI'll just sit here. Alone. In the dark... (for {sleep_time} seconds)\n\n")
+        else:
+            print(f"Found {len(new_failures)} new RADIUS failures.")
+            try:
+                process_failures(new_failures)
+            except:
+                print("\033[1;31;40mAn error has occurred - not able to send an email\033[0m")
+        #
         time.sleep(sleep_time)
