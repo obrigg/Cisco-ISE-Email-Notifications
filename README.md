@@ -3,7 +3,7 @@
 ## The Challenge
 
 While enterprise customers usually have a SOC team monitoring the various security systems for alerts, not all customer have the resources for SOC or a centralized monitoring and event management systems.
-These customers would prefer to use email notifications as an alerting mechanism for RADIUS failures on ISE. However, (currently) ISE does not have a built-in capability to send email upon RADIUS failures.
+These customers would prefer to use email notifications as an alerting mechanism for RADIUS failures on ISE. However, (currently) ISE does not have a built-in capability to send detailed email upon RADIUS failures, ISE can send an alert when the amount of failures cross a certain threshold.
 
 With Cisco ISE's open APIs - that does not need to stop us.
 
@@ -13,6 +13,11 @@ This code will leverage ISE's pxGrid API to fetch RADIUS failures from ISE and s
 (#TODO - change the operation mode to `push` instead of `pull`)
 
 ## How to run the script on Docker:
+
+There are several options for running this script:
+1. Running the code on a computer/server with Python. Probably the easiest, but a waste of resources.
+2. Running the code on a Docker container. Requires to <a href="https://docs.docker.com/get-docker/"> install Docker</a>.
+3. Running the code on a Cisco device using Guestshell (Cisco Guestshell is a virtualized Linux-based environment, designed to run custom Linux applications, including Python for automated control and management of Cisco devices). See details below.
 
 ### High-level overview of the flow
 
