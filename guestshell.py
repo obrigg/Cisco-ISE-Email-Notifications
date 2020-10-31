@@ -125,15 +125,29 @@ def get_radius_failures():
 
 
 def process_failures(failures):
-    message = "Subject: RADIUS Failure Report\n\n"
+    message = "Subject: RADIUS Failure Report\n\nNew Radius failures were detected:\n"
     for fail in failures:
-        message += str(fail) + "\n\n"
+        try:
+            message += f"""
+            Timestamp:                   {fail['timestamp']}
+            NAS IP:                      {fail['nasIpAddress']}
+            NAS Name:                    {fail['nasName']}
+            NAS Port:                    {fail['nasPortId']}
+            Username:                    {fail['userName']}
+            Calling Station Id:          {fail['callingStationId']}
+            Original Calling Station Id: {fail['originalCallingStationId']}
+            Message Code:                {fail['messageCode']}
+            =========================================================\n\n"""
+        except:
+            message+= f"This failure was not parsed correctly, enclosed the original: \
+                \n{str(fail)}\n\n"
     print(f"The following email will be sent from: {mail_username} to: {mail_destination}\
         \n\n{message}")
     send_email(message)
 
 
 def send_email(message):
+    context = ssl.create_default_context()
     with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
         server.login(mail_username, mail_password)
         server.sendmail(from_addr=mail_username, to_addrs=mail_destination, msg=message)
@@ -153,7 +167,6 @@ if __name__ == "__main__":
     activate_account()
     node = service_lookup("com.cisco.ise.radius")
     pxgrid_secret = get_pxgrid_secret(node)
-    context = ssl.create_default_context()
     last_fail_id = "0"
     print("\n\n\n\t\tPreparation complete - Now let's get to business...\n\n\n")
     new_failures = []
