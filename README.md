@@ -10,7 +10,6 @@ With Cisco ISE's open APIs - that does not need to stop us.
 ## The Solution
 
 This code will leverage ISE's pxGrid API to fetch RADIUS failures from ISE and send them via mail.
-(#TODO - change the operation mode to `push` instead of `pull`)
 
 ## How to run the script on Docker:
 
