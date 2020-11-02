@@ -1,5 +1,5 @@
 # Cisco ISE Email Notifications
-
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/obrigg/Cisco-ISE-Email-Notifications)
 ## The Challenge
 
 While enterprise customers usually have a SOC team monitoring the various security systems for alerts, not all customer have the resources for SOC or a centralized monitoring and event management systems.
